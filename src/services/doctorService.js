@@ -1,3 +1,4 @@
+import e from "express";
 import db from "../models/index";
 
 let getTopDoctorHome = (limitInput) => {
@@ -47,7 +48,36 @@ let getAllDoctors = () => {
       })
 }
 
+let saveDetailInfoDoctor = (inputData) => {
+      return new Promise(async (resolve, reject) => {
+            try {
+                  console.log('inputData:', inputData);
+                  if (!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown) {
+                        resolve({
+                              errCode: 1,
+                              message: 'Missing required parameters!'
+                        })
+                  } else {
+                        await db.Markdown.create({
+                              contentHTML: inputData.contentHTML,
+                              contentMarkdown: inputData.contentMarkdown,
+                              description: inputData.description,
+                              doctorId: inputData.doctorId
+                        })
+                  }
+                  resolve({
+                        errCode: 0,
+                        errMessage: 'Save info doctor succeed!',
+                        // data: doctors
+                  })
+            } catch (e) {
+                  reject(e);
+            }
+      })
+}
+
 module.exports = {
       getTopDoctorHome: getTopDoctorHome,
-      getAllDoctors: getAllDoctors
+      getAllDoctors: getAllDoctors,
+      saveDetailInfoDoctor: saveDetailInfoDoctor
 }
